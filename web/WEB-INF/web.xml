@@ -16,13 +16,14 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/web/WEB-INF/content/jsp/error.jsp</location>
+        <location>/WEB-INF/content/jsp/error.jsp</location>
     </error-page>
 
-<!--    <filter>-->
-<!--        <filter-name>filter</filter-name>-->
-<!--        <filter-class>RubbishController</filter-class>-->
-<!--    </filter>-->
+<!--    <se>
+        <filter-name>controller</filter-name>
+        <filter-class>RubbishController</filter-class>
+        <load-on-startup>1</load-on-startup>
+    </se>-->
 <!--    <filter-mapping>-->
 <!--        <filter-name>filter</filter-name>-->
 <!--        <url-pattern>/*/*</url-pattern>-->

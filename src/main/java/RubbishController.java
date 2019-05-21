@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @WebFilter("/*")
@@ -19,7 +20,7 @@ public class RubbishController implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.home_page = "WEB-INF/content/jsp/home.jsp";
+        this.home_page = "WEB-INF/content/jsp/menu.jsp";
         this.error_page = "WEB-INF/content/jsp/error.jsp";
     }
 
@@ -31,17 +32,28 @@ public class RubbishController implements Filter {
         String action = req.getServletPath();
         try {
             switch (action) {
-                case "/menu.jsp":
-                    req.getRequestDispatcher("WEB-INF/content/jsp/menu.jsp").forward(req, resp);
+                case "/update":
+                    updateRubbsih(req, resp);
                     filterChain.doFilter(req, resp);
-                    break;
+                    return;
+                case "/edit":
+                    showEditForm(req, resp);
+                    filterChain.doFilter(req, resp);
+                    return;
                 case "/new":
                     showNewForm(req, resp);
                     filterChain.doFilter(req, resp);
-                    break;
+                    return;
                 case "/insert":
                     insertRubbish(req, resp);
                     filterChain.doFilter(req, resp);
+                    return;
+                case "/delete":
+                    deleteRubbish(req, resp);
+                    filterChain.doFilter(req, resp);
+                    return;
+                default:
+                    listRubbish(req, resp);
                     break;
             }
         } catch (SQLException e) {
@@ -50,10 +62,46 @@ public class RubbishController implements Filter {
 
         req.getRequestDispatcher(home_page).forward(req, resp);
         filterChain.doFilter(req, resp);
+        return;
     }
 
-    private void insertRubbish(HttpServletRequest req, HttpServletResponse resp) {
+    private void updateRubbsih(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        String name = req.getParameter("name");
+        String description = req.getParameter("description");
+        int quantity = Integer.parseInt(req.getParameter("quantity"));
+        String location = req.getParameter("location");
 
+        Rubbish rubbish = new Rubbish(id, name, description, quantity, location);
+        daoRubbishInstance.update(rubbish);
+        resp.sendRedirect("/list");
+    }
+
+    private void showEditForm(HttpServletRequest req, HttpServletResponse resp) throws SQLException, ServletException, IOException {
+        String id = req.getParameter("id");
+        Optional<Rubbish> rubbish = daoRubbishInstance.find(id);
+        RequestDispatcher rd = req.getRequestDispatcher("WEB-INF/content/jsp/RubbishForm.jsp");
+        rubbish.ifPresent(s -> req.setAttribute("rubbish", s));
+        rd.forward(req, resp);
+    }
+
+    private void deleteRubbish(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+
+        Rubbish rubbish = new Rubbish(id);
+        daoRubbishInstance.delete(rubbish);
+        resp.sendRedirect("/list");
+    }
+
+    private void insertRubbish(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        String name = req.getParameter("name");
+        String description = req.getParameter("description");
+        int quantity = Integer.parseInt(req.getParameter("quantity"));
+        String location = req.getParameter("location");
+
+        Rubbish rubbish = new Rubbish(name, description, quantity, location);
+        daoRubbishInstance.save(rubbish);
+        resp.sendRedirect("/list");
     }
 
     private void showNewForm(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException, ServletException {
@@ -61,4 +109,7 @@ public class RubbishController implements Filter {
         dispatcher.forward(req, resp);
     }
 
+    private void listRubbish(HttpServletRequest req, HttpServletResponse resp) {
+
+    }
 }

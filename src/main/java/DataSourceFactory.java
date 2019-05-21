@@ -14,7 +14,9 @@ import java.util.logging.Logger;
 
 public class DataSourceFactory {
 
-    private final DataSource dataSource;
+//    private static MysqlDataSource dataSource;
+//    public static DataSourceFactory INSTANCE = new DataSourceFactory();
+    private DataSource dataSource;
     private static final Logger LOGGER = Logger.getLogger(DataSourceFactory.class.getName());
 
     public DataSourceFactory() {
@@ -23,6 +25,7 @@ public class DataSourceFactory {
 //        InputStream inputStream = null;
 
         try(InputStream inputStream = new FileInputStream(rootpath)) {
+            Class.forName("com.mysql.jdbc.Driver");
             Properties properties = new Properties();
             properties.load(inputStream);
             mysqlDataSource.setDatabaseName(properties.getProperty("database"));
@@ -33,30 +36,29 @@ public class DataSourceFactory {
         }
         catch (FileNotFoundException e) {
             LOGGER.log(Level.SEVERE, "File database.properties not found", e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "IO ERROR", e);
-        } finally {
-
+        } catch (ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Class.forName have been thought error", e);
         }
 
         this.dataSource = mysqlDataSource;
     }
 
-    public static synchronized Connection getConnection() throws SQLException {
-        if (SingletonHelper.INSTANCE == null) {
-            DataSourceFactory dat = SingletonHelper.getInstansevalue();
-            return dat.dataSource.getConnection();
-        }
-        return SingletonHelper.INSTANCE.dataSource.getConnection();
+    public static synchronized Connection getConn() throws SQLException {
+/*        if (DataSourceFactory.SingletonHelper.getInstansevalue() == null) {
+            SingletonHelper.INSTANCE = new DataSourceFactory();
+            return SingletonHelper.INSTANCE.dataSource.getConnection();
+        }*/
+        return dataSource.getConnection();
     }
 
-    private static class SingletonHelper {
+/*    private static class SingletonHelper {
 
         public static DataSourceFactory getInstansevalue() {
             return SingletonHelper.INSTANCE;
         }
 
         private static final DataSourceFactory INSTANCE = new DataSourceFactory();
-    }
+    }*/
 }

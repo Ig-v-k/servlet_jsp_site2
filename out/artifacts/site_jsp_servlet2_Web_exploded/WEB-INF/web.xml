@@ -14,10 +14,16 @@
         <welcome-file>default.jsp</welcome-file>
     </welcome-file-list>
 
-<!--    <filter>-->
-<!--        <filter-name>filter</filter-name>-->
-<!--        <filter-class>RubbishController</filter-class>-->
-<!--    </filter>-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/content/jsp/error.jsp</location>
+    </error-page>
+
+<!--    <se>
+        <filter-name>controller</filter-name>
+        <filter-class>RubbishController</filter-class>
+        <load-on-startup>1</load-on-startup>
+    </se>-->
 <!--    <filter-mapping>-->
 <!--        <filter-name>filter</filter-name>-->
 <!--        <url-pattern>/*/*</url-pattern>-->

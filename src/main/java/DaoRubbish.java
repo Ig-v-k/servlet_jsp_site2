@@ -24,7 +24,7 @@ public class DaoRubbish implements RubbishDao {
         String sql = "select rubbish_id, name, description, quantity, location from rubbish where rubbish_id = ?";
         int id_rubbish = 0, quantity = 0;
         String name = "", description = "", location = "";
-        Connection conn = DataSourceFactory.getConnection();
+        Connection conn = DataSourceFactory.getConn();
 
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setString(1, sql);
@@ -46,7 +46,7 @@ public class DaoRubbish implements RubbishDao {
         List<Rubbish> listrubbish = new ArrayList<>();
         String sql = "select rubbish_id, name, description, quantity, location from rubbish";
 
-        Connection conn = DataSourceFactory.getConnection();
+        Connection conn = DataSourceFactory.getConn();
         PreparedStatement statement = conn.prepareStatement(sql);
         ResultSet resultset = statement.executeQuery();
 
@@ -69,7 +69,7 @@ public class DaoRubbish implements RubbishDao {
         String sql = "insert into rubbish (name, description, quantity, location) values (?, ?, ?, ?)";
         boolean booleanInsert = false;
 
-        Connection conn = DataSourceFactory.getConnection();
+        Connection conn = DataSourceFactory.getConn();
         PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, o.getName());
             statement.setString(2, o.getDescription());
@@ -85,7 +85,7 @@ public class DaoRubbish implements RubbishDao {
         String sql = "update rubbish set name = ?, description = ?, quantity = ?, location = ? where rubbish_id = ?";
         boolean booleanUpdate = false;
 
-        Connection conn = DataSourceFactory.getConnection();
+        Connection conn = DataSourceFactory.getConn();
         PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, o.getName());
             statement.setString(2, o.getDescription());
@@ -102,7 +102,7 @@ public class DaoRubbish implements RubbishDao {
         String sql = "delete from rubbish where rubbish_id = ?";
         boolean booleanDelete = false;
 
-        Connection conn = DataSourceFactory.getConnection();
+        Connection conn = DataSourceFactory.getConn();
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setInt(1, o.getId());
         booleanDelete = statement.executeUpdate() > 0;

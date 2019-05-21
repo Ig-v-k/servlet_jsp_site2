@@ -10,6 +10,7 @@
       <secret-storage>master_key</secret-storage>
       <user-name>root</user-name>
       <introspection-schemas>*:@,db</introspection-schemas>
+      <legacy-introspector>true</legacy-introspector>
     </data-source>
   </component>
 </project>
